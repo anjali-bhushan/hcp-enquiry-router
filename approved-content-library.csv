@@ -1,0 +1,10 @@
+Specialty,Topic,Content Title,Content Type,Approved Link
+Medical Oncology,Test ordering,How to order comprehensive tumour profiling (sample guide),Guide,https://example.org/sample/ordering-guide
+Medical Oncology,Scientific information,Interpreting a molecular profiling report (sample webinar),Webinar,https://example.org/sample/report-webinar
+Pathology,Specimen logistics,Tissue block and slide requirements (sample checklist),Checklist,https://example.org/sample/specimen-checklist
+Pathology,Scientific information,Biomarker testing methods explained (sample article),Article,https://example.org/sample/methods
+Hematology,Educational resource,Liquid biopsy basics for haematology (sample webinar),Webinar,https://example.org/sample/liquid-biopsy
+Surgical Oncology,Specimen logistics,Sending surgical specimens for profiling (sample guide),Guide,https://example.org/sample/surgical-specimens
+All,Access and reimbursement,Patient access and billing support overview (sample),Guide,https://example.org/sample/access
+All,Educational resource,Precision oncology 101 (sample course),Course,https://example.org/sample/po-101
+Radiation Oncology,Educational resource,,Webinar,https://example.org/sample/missing-title

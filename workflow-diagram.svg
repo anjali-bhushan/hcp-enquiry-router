@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1190" width="1000" height="1190" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+<style>.t{font-size:14px;font-weight:600;fill:#0f172a;text-anchor:middle} .s{font-size:11.5px;fill:#475569;text-anchor:middle} .l{font-size:12px;fill:#334155;font-weight:600} .h{font-size:22px;font-weight:700;fill:#0f172a;text-anchor:middle} .g{font-size:12.5px;fill:#334155}</style></defs>
+<rect width="1000" height="1190" fill="#ffffff"/>
+<text x="500.0" y="38" class="h">HCP Enquiry Router: workflow</text>
+<rect x="165.0" y="65.0" width="270" height="50" rx="24" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+<text x="300" y="86" class="t">HCP enquiry form</text><text x="300" y="104" class="s">n8n Form trigger</text>
+<rect x="165.0" y="145.0" width="270" height="50" rx="10" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+<text x="300" y="166" class="t">Standardize</text><text x="300" y="184" class="s">unique ID, timestamp, tidy fields</text>
+<rect x="165.0" y="225.0" width="270" height="50" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+<path d="M177.0,225.0 l-12,25.0 l12,25.0 M423.0,225.0 l12,25.0 l-12,25.0" fill="none" stroke="#D97706" stroke-width="2"/>
+<text x="300" y="255" class="t">Consent given?</text>
+<rect x="165.0" y="305.0" width="270" height="50" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+<text x="300" y="326" class="t">Rule screen</text><text x="300" y="344" class="s">safety terms + patient data</text>
+<rect x="165.0" y="385.0" width="270" height="50" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+<path d="M177.0,385.0 l-12,25.0 l12,25.0 M423.0,385.0 l12,25.0 l-12,25.0" fill="none" stroke="#D97706" stroke-width="2"/>
+<text x="300" y="415" class="t">Flagged?</text>
+<rect x="165.0" y="465.0" width="270" height="50" rx="10" fill="#F3E8FF" stroke="#9333EA" stroke-width="2"/>
+<text x="300" y="486" class="t">AI classify (OpenAI)</text><text x="300" y="504" class="s">category, priority, confidence</text>
+<rect x="165.0" y="545.0" width="270" height="50" rx="10" fill="#F3E8FF" stroke="#9333EA" stroke-width="2"/>
+<text x="300" y="575" class="t">Valid JSON, confidence ≥ 0.7?</text>
+<rect x="165.0" y="625.0" width="270" height="50" rx="10" fill="#F3E8FF" stroke="#9333EA" stroke-width="2"/>
+<text x="300" y="655" class="t">AI says review needed?</text>
+<rect x="165.0" y="705.0" width="270" height="50" rx="10" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+<text x="300" y="726" class="t">Find approved content</text><text x="300" y="744" class="s">specialty + topic → specialty → All</text>
+<rect x="165.0" y="785.0" width="270" height="50" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+<path d="M177.0,785.0 l-12,25.0 l12,25.0 M423.0,785.0 l12,25.0 l-12,25.0" fill="none" stroke="#D97706" stroke-width="2"/>
+<text x="300" y="815" class="t">Content found?</text>
+<rect x="165.0" y="865.0" width="270" height="50" rx="10" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+<text x="300" y="886" class="t">CRM Log</text><text x="300" y="904" class="s">Google Sheets</text>
+<rect x="165.0" y="945.0" width="270" height="50" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+<path d="M177.0,945.0 l-12,25.0 l12,25.0 M423.0,945.0 l12,25.0 l-12,25.0" fill="none" stroke="#D97706" stroke-width="2"/>
+<text x="300" y="975" class="t">Preferred channel?</text>
+<rect x="55.0" y="1025.0" width="230" height="50" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+<text x="170" y="1055" class="t">Email approved content</text>
+<rect x="315.0" y="1025.0" width="230" height="50" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+<text x="430" y="1055" class="t">Email callback link</text>
+<path d="M300,115.0 V142.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M300,195.0 V222.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M300,275.0 V302.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="322" y="295.0" class="l">Yes</text>
+<path d="M300,355.0 V382.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M300,435.0 V462.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="322" y="455.0" class="l">No</text>
+<path d="M300,515.0 V542.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M300,595.0 V622.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="322" y="615.0" class="l">Yes</text>
+<path d="M300,675.0 V702.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="322" y="695.0" class="l">No</text>
+<path d="M300,755.0 V782.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M300,835.0 V862.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="322" y="855.0" class="l">Yes</text>
+<path d="M300,915.0 V942.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M300,995.0 V1012 H170 V1022.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="205" y="1008" class="l">Email</text>
+<path d="M300,1012 H430 V1022.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="395" y="1008" class="l">Call</text>
+<rect x="635.0" y="225.0" width="270" height="50" rx="10" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+<text x="770" y="246" class="t">Block contact + log</text><text x="770" y="264" class="s">no email, AI not called</text>
+<rect x="635.0" y="385.0" width="270" height="50" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+<text x="770" y="406" class="t">Escalate (Urgent)</text><text x="770" y="424" class="s">Medical Affairs / Privacy</text>
+<rect x="635.0" y="625.0" width="270" height="50" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+<text x="770" y="655" class="t">Route to human review</text>
+<rect x="635.0" y="785.0" width="270" height="50" rx="10" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+<text x="770" y="806" class="t">Medical Review Queue</text><text x="770" y="824" class="s">respond-by: 4 h urgent, 24 h other</text>
+<rect x="635.0" y="865.0" width="270" height="50" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+<text x="770" y="895" class="t">Acknowledgement email</text>
+<rect x="635.0" y="1025.0" width="270" height="50" rx="10" fill="#DCFCE7" stroke="#16A34A" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="770" y="1046" class="t">Workflow Failures log</text><text x="770" y="1064" class="s">for manual follow-up</text>
+<path d="M435.0,250 H632.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="527.0" y="242" class="l">No</text>
+<path d="M435.0,410 H632.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="525.0" y="402" class="l">Yes</text>
+<path d="M435.0,490 H530 V636 H632.0" fill="none" stroke="#DC2626" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="440" y="482" class="l">API error (after 3 tries)</text>
+<path d="M435.0,570 H570 V646 H632.0" fill="none" stroke="#DC2626" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="500" y="562" class="l">No</text>
+<path d="M435.0,650 H632.0" fill="none" stroke="#DC2626" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="520" y="668" class="l">Yes</text>
+<path d="M435.0,810 H600 V664 H632.0" fill="none" stroke="#DC2626" stroke-width="1.8" marker-end="url(#a)"/>
+<text x="500" y="802" class="l">No</text>
+<path d="M770,675.0 V782.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M905.0,410 H945 V810 H908.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M770,835.0 V862.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)"/>
+<path d="M770,915.0 V1022.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)" stroke-dasharray="6 4"/>
+<text x="780" y="970.0" class="l">if sending fails</text>
+<path d="M545,1050 H632.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)" stroke-dasharray="6 4"/>
+<path d="M170,1075.0 V1102 H770 V1078.0" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#a)" stroke-dasharray="6 4"/>
+<text x="330" y="1097" class="l">if sending fails</text>
+<rect x="70" y="1151" width="16" height="14" rx="3" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/><text x="92" y="1162" class="g">Trigger</text>
+<rect x="165.8" y="1151" width="16" height="14" rx="3" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.5"/><text x="187.8" y="1162" class="g">Processing</text>
+<rect x="283.8" y="1151" width="16" height="14" rx="3" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/><text x="305.8" y="1162" class="g">Rule / decision</text>
+<rect x="438.8" y="1151" width="16" height="14" rx="3" fill="#F3E8FF" stroke="#9333EA" stroke-width="1.5"/><text x="460.8" y="1162" class="g">AI step</text>
+<rect x="534.6" y="1151" width="16" height="14" rx="3" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/><text x="556.6" y="1162" class="g">Human review</text>
+<rect x="667.4000000000001" y="1151" width="16" height="14" rx="3" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/><text x="689.4000000000001" y="1162" class="g">Google Sheets log</text>
+<rect x="837.2" y="1151" width="16" height="14" rx="3" fill="#CCFBF1" stroke="#0D9488" stroke-width="1.5"/><text x="859.2" y="1162" class="g">Gmail</text>
+</svg>
