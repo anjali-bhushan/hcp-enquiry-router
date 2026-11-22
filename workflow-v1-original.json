@@ -1,0 +1,1475 @@
+{
+  "name": "HCP Enquiry Routing and Next Best Action (v1 - original)",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Precision Oncology HCP Enquiry Form",
+        "formDescription": "Submit an enquiry related to precision-oncology testing, scientific information, test ordering, specimen logistics or access support. Do not include patient-identifiable information.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "HCP ID",
+              "placeholder": "Enter the assigned HCP identification number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "HCP Name",
+              "placeholder": "Enter the healthcare professional's name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Specialty",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Medical Oncology "
+                  },
+                  {
+                    "option": "Surgical Oncology"
+                  },
+                  {
+                    "option": "Radiation Oncology"
+                  },
+                  {
+                    "option": "Hematology"
+                  },
+                  {
+                    "option": "Pathology"
+                  },
+                  {
+                    "option": "Other"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Organization",
+              "placeholder": "Enter hospital, clinic or institution name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Enter professional email address",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Communication Consent",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  },
+                  {
+                    "option": "No"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Engagement Source",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Webinar"
+                  },
+                  {
+                    "option": "Conference"
+                  },
+                  {
+                    "option": "Email Campaign"
+                  },
+                  {
+                    "option": "Field Representative"
+                  },
+                  {
+                    "option": "Website"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Content Viewed",
+              "placeholder": "Enter the webinar, article or content viewed",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Last Contacted Date",
+              "fieldType": "date"
+            },
+            {
+              "fieldLabel": "HCP Query",
+              "fieldType": "textarea",
+              "placeholder": "Describe your enquiry without including patient names or other identifiable health information.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Preferred Channel",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Email"
+                  },
+                  {
+                    "option": "Representative Call"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        96
+      ],
+      "id": "8222686f-9b82-42ef-b95d-f4400564910d",
+      "name": "On form submission",
+      "webhookId": "ab13f48b-5b4b-49b2-a88c-0521b95d7ed1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3aedef1b-13ab-447e-99bf-10000cc7fc42",
+              "name": "submission_id",
+              "value": "={{ 'HCP-' + $now.toFormat('yyyyMMddHHmmss') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        96
+      ],
+      "id": "2442c4cf-b356-4933-b15d-f4d7224bed62",
+      "name": "Standardize HCP Enquiry"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "62153465-725f-438f-8d6b-59e8c28d058f",
+              "leftValue": "={{ $json['Communication Consent'] }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        96
+      ],
+      "id": "100d27b6-647d-445b-9aad-3c27eeee1b24",
+      "name": "Consent Valid?",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf3150a4-2436-40c6-8f67-3e6a4ed0c062",
+              "name": "workflow_status",
+              "value": "BLOCKED",
+              "type": "string"
+            },
+            {
+              "id": "450fdb49-c05c-4466-9704-7bd71611b70b",
+              "name": "routing_team",
+              "value": "Compliance Review",
+              "type": "string"
+            },
+            {
+              "id": "e364db54-59dd-4ed4-b8dd-2a9d155d98f9",
+              "name": "reason",
+              "value": "Communication consent not provided",
+              "type": "string"
+            },
+            {
+              "id": "0e48140d-fb01-4ec4-ad7b-8c790271e7e7",
+              "name": "contact_permitted",
+              "value": "No",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        192
+      ],
+      "id": "cd3d8397-73ca-41a0-9ecc-b2bac29fd6e1",
+      "name": "Block Contact-No Consent."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9d7e0743-553f-48fa-b9b5-9a18a46a5849",
+              "leftValue": "={{ $json['HCP Query'] }}",
+              "rightValue": "(adverse event|side effect|serious reaction|hospitalized|hospitalised|death|died|off-label|off label|unapproved use|pregnancy|overdose)",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        0
+      ],
+      "id": "16c22e69-18c8-4d1d-b69d-c142050d1fe2",
+      "name": "Query Requires Medical Review?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f094b1c0-d717-41bd-bbdd-ef4dd2b695a2",
+              "name": "workflow_status",
+              "value": "HUMAN_REVIEW_REQUIRED",
+              "type": "string"
+            },
+            {
+              "id": "7f886268-6204-4d6c-ba40-1694b19d6da5",
+              "name": "routing_team",
+              "value": "Medical Affairs",
+              "type": "string"
+            },
+            {
+              "id": "832f24be-021b-43dd-9d75-ddfacefd0c14",
+              "name": "reason",
+              "value": "Potential safety or off-label enquiry detected",
+              "type": "string"
+            },
+            {
+              "id": "2b0efe3d-2e71-4c89-85ea-f64c66d7ec27",
+              "name": "contact_permitted",
+              "value": "No automated response",
+              "type": "string"
+            },
+            {
+              "id": "dc10d701-8017-4a09-8d43-ea652cf18e43",
+              "name": "priority",
+              "value": "Urgent",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2816,
+        -272
+      ],
+      "id": "fde53e85-ead8-422a-bc81-8fafc50a4ca3",
+      "name": "Escalate to Medical Affairs"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Set human_review_required to false for clear, general requests for approved educational resources, webinars, company information, molecular profiling information, or precision-oncology information.\n\nSet human_review_required to true only for:\n- adverse events or side effects\n- off-label or unapproved-use requests\n- patient-specific treatment recommendations\n- safety, legal, or compliance issues\n- genuinely unclear enquiries\n\nReturn ONLY one valid JSON object.\nDo not write “Understood”, explanations, greetings, markdown, or ```json fences.\nYour entire response must begin with { and end with }."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        64
+      ],
+      "id": "7a99cd61-a9e2-4049-8a29-5cbd04c83bc9",
+      "name": "AI Classify Enquiry and Recommend Action"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst originalData =\n  $('Query Requires Medical Review?').first().json;\n\ntry {\n  const rawText = input.output?.[0]?.content?.[0]?.text;\n\n  if (typeof rawText !== 'string' || !rawText.trim()) {\n    throw new Error('AI response is missing or empty');\n  }\n\n  const cleanText = rawText.trim()\n    .replace(/^```(?:json)?\\s*/i, '')\n    .replace(/\\s*```$/, '')\n    .trim();\n\n  const aiResult = JSON.parse(cleanText);\n\n  if (!aiResult || typeof aiResult !== 'object' ||\n      Array.isArray(aiResult)) {\n    throw new Error('AI response must be a JSON object');\n  }\n\n  if (typeof aiResult.human_review_required !== 'boolean') {\n    throw new Error('human_review_required must be a boolean');\n  }\n\n  return [{\n    json: {\n      ...aiResult,\n      ...originalData,\n      human_review_required: aiResult.human_review_required,\n      ai_output_valid: true,\n      ai_output_error: ''\n    }\n  }];\n} catch (error) {\n  return [{\n    json: {\n      ...originalData,\n      ai_output_valid: false,\n      ai_output_error: error.message,\n      human_review_required: true\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        64
+      ],
+      "id": "f3e46de7-e783-4b07-afb6-dd4f92ff1614",
+      "name": "Parse AI Output"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e4cf9177-363f-401a-8555-9b41099999ff",
+              "leftValue": "={{ $json.human_review_required }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1696,
+        192
+      ],
+      "id": "2a1076d8-0797-4ed7-94ce-22ddf9d3b5b4",
+      "name": "Human Review Required?"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.stringify({\n  workflow_status: 'HUMAN_REVIEW_REQUIRED',\n  routing_team: 'Medical Affairs Review',\n  contact_permitted: 'Acknowledgement only',\n  reason: $json.ai_output_valid === false\n    ? 'Invalid AI output: ' + ($json.ai_output_error || 'Unknown parsing error')\n    : 'AI flagged low confidence or a review requirement',\n  priority: $json.priority || 'Medium'\n}) }}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        -96
+      ],
+      "id": "a6d82171-5927-4694-b6dd-fb5ebd31ff32",
+      "name": "Route to Human Review"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2b782f1e-c5ef-4445-8704-74cf3c07fc8c",
+              "name": "workflow_status",
+              "value": "READY_FOR_CRM",
+              "type": "string"
+            },
+            {
+              "id": "c00f5696-e19f-4304-b1b4-e905b0a35950",
+              "name": "routing_team",
+              "value": "=HCP Engagement Team",
+              "type": "string"
+            },
+            {
+              "id": "acbc6e45-51a5-4561-9285-b8509552ae34",
+              "name": "=next_best_action",
+              "value": "={{ $json['Preferred Channel'] === 'Call' ? 'Send callback-booking link' : 'Send approved content by email' }}",
+              "type": "string"
+            },
+            {
+              "id": "178f174b-07fc-44ca-9ca3-06e33487e051",
+              "name": "recommended_content",
+              "value": "=Select from approved content library",
+              "type": "string"
+            },
+            {
+              "id": "0226931d-aea1-4421-9573-63b722a65b4c",
+              "name": "follow_up_draft",
+              "value": "=Use the configured email template",
+              "type": "string"
+            },
+            {
+              "id": "1ace1ebd-7412-4816-b5c6-607f86e60d1d",
+              "name": "priority",
+              "value": "=Low",
+              "type": "string"
+            },
+            {
+              "id": "79f88c42-1060-4a7c-b9e7-b1bbdcff5dce",
+              "name": "contact_permitted",
+              "value": "Yes",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        288
+      ],
+      "id": "0b8b2081-f8bb-49a2-b577-5a123a8b1d02",
+      "name": "Prepare CRM Follow-up"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "CRM Log",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "submission_id": "={{$json.submission_id}}",
+            "HCP Name": "={{ $json['HCP Name'] }}",
+            "Specialty": "={{ $json.Specialty }}",
+            "Email": "={{ $json.Email }}",
+            "workflow_status": "={{ $json.workflow_status }}",
+            "routing_team": "={{ $json.routing_team }}",
+            "priority": "={{ $json.priority }}",
+            "next_best_action": "={{ $json.next_best_action }}",
+            "recommended_content": "={{ $json.recommended_content }}",
+            "follow_up_draft": "={{ $json.follow_up_draft }}",
+            "approved_content_title": "={{ $json.approved_content_title }}",
+            "approved_content_link": "={{ $json.approved_content_link }}",
+            "Preferred Channel": "={{ $('On form submission').first().json[\"Preferred Channel\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "submission_id",
+              "displayName": "submission_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "HCP Name",
+              "displayName": "HCP Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Specialty",
+              "displayName": "Specialty",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_status",
+              "displayName": "workflow_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "routing_team",
+              "displayName": "routing_team",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "next_best_action",
+              "displayName": "next_best_action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "recommended_content",
+              "displayName": "recommended_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "follow_up_draft",
+              "displayName": "follow_up_draft",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "approved_content_title",
+              "displayName": "approved_content_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "approved_content_link",
+              "displayName": "approved_content_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Channel",
+              "displayName": "Preferred Channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2816,
+        192
+      ],
+      "id": "a2fec926-a36a-46bd-a081-064fc2a3fbed",
+      "name": "HCP Enquiry CRM Log"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Medical Review Queue",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "submission_id": "={{ $json.submission_id }}",
+            "HCP Name": "={{ $json['HCP Name'] }}",
+            "Specialty": "={{ $json.Specialty }}",
+            "Email": "={{ $json.Email }}",
+            "workflow_status": "={{ $json.workflow_status }}",
+            "routing_team": "={{ $json.routing_team }}",
+            "priority": "={{ $json.priority }}",
+            "reason": "={{ $json.reason }}",
+            "HCP Query": "={{ $json['HCP Query'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "submission_id",
+              "displayName": "submission_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "HCP Name",
+              "displayName": "HCP Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Specialty",
+              "displayName": "Specialty",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow_status",
+              "displayName": "workflow_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "routing_team",
+              "displayName": "routing_team",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "HCP Query",
+              "displayName": "HCP Query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3040,
+        -32
+      ],
+      "id": "8b275dce-7030-410e-84b5-9c8e82bada53",
+      "name": "Create Medical Review Queue"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Approved Content Library",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2144,
+        288
+      ],
+      "id": "d78ec748-7be6-40ca-9d04-deac689e3b38",
+      "name": "Find Approved Content",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const hcp = $('Prepare CRM Follow-up').first().json;\nconst rows = $input.all().map(item => item.json);\n\nconst normalize = value =>\n  String(value ?? '').trim().toLowerCase();\n\nconst usableRows = rows.filter(row =>\n  String(row['Content Title'] ?? '').trim() &&\n  /^https?:\\/\\/\\S+$/i.test(\n    String(row['Approved Link'] ?? '').trim()\n  )\n);\n\nconst content =\n  usableRows.find(row =>\n    normalize(row.Specialty) === normalize(hcp.Specialty)\n  ) ||\n  usableRows.find(row =>\n    normalize(row.Specialty) === 'all'\n  );\n\nreturn [{\n  json: {\n    ...hcp,\n    approved_content_found: Boolean(content),\n    approved_content_title: content?.['Content Title'] || '',\n    approved_content_link:\n      String(content?.['Approved Link'] ?? '').trim(),\n    approved_content_type: content?.['Content Type'] || '',\n    approved_content_topic: content?.Topic || '',\n    content_review_reason: content\n      ? ''\n      : `No usable approved content found for specialty: ${hcp.Specialty}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        288
+      ],
+      "id": "d8b1b402-3219-4ae1-90ca-9c677c743c45",
+      "name": "Combine HCP and Content"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Information related to your enquiry",
+        "emailType": "text",
+        "message": "=Dear {{ $json[\"HCP Name\"] }},\n\nThank you for your enquiry.\nApproved resource:\n{{ $json.approved_content_title }}\n{{ $json.approved_content_link }}\n\nRegards,\nPrecision Oncology Enquiry Team (prototype)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3264,
+        288
+      ],
+      "id": "2239fc96-2b24-4854-8039-6908b8dcd42f",
+      "name": "Send a message",
+      "webhookId": "97ff0e4b-1487-4a92-a7eb-8445356c9707"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Your representative callback request",
+        "emailType": "text",
+        "message": "=Dear {{ $json[\"HCP Name\"] }},\nThank you for your enquiry.  A member of our team will contact you shortly through your preferred channel.\nPlease use the callback booking link below to select a convenient date and time: https://YOUR-N8N-INSTANCE/form/callback-booking\n\nRegards, Precision Oncology Enquiry Team (prototype)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3264,
+        480
+      ],
+      "id": "8e57bf2e-a3c8-4a87-bb75-d42c0ecbb461",
+      "name": "Send a message1",
+      "webhookId": "020318e4-3c75-46c3-9403-2ec723ae484b"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Your enquiry has been received",
+        "emailType": "text",
+        "message": "=Dear {{ $json[\"HCP Name\"] }}, \nThank you for your enquiry.  Your request has been forwarded to our Medical Affairs team for review. A qualified representative will contact you shortly.  \nRegards, \nPrecision Oncology Enquiry Team (prototype)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3264,
+        -32
+      ],
+      "id": "9229add4-aca0-4269-a039-ac87a81279e6",
+      "name": "Send a message2",
+      "webhookId": "2744d36e-d8ab-4cd6-b650-c5bf67a709d0",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "738871ff-e65e-4b58-84a7-8c03c2ca0119",
+              "leftValue": "={{ $json[\"Preferred Channel\"] }}",
+              "rightValue": "Email",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3040,
+        288
+      ],
+      "id": "5323d585-4f30-48e3-b43e-93dea61249e2",
+      "name": "Preferred Channel?"
+    },
+    {
+      "parameters": {
+        "content": "Purpose and input This prototype routes HCP enquiries for a hypothetical precision-oncology company. The form captures contact details, specialty, query, consent and preferred channel. Standardization prepares the submitted data for downstream checks.\n",
+        "height": 368,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -176,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "4777f363-0a3c-496b-a192-b6a168a02680",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "AI task and validation AI supplies the Boolean human_review_required flag for enquiries that pass earlier checks. The parser checks valid JSON and a Boolean value. Invalid output routes to human review. The deployed prompt defines clear general-information requests as false; ambiguous-case behaviour needs further testing.",
+        "height": 400,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        816,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "be42ff16-9581-415e-a69a-1833b4406ed0",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Content selection Retrieve content from the configured Sheets library. Match specialty first, then use the All-specialty fallback. Require a title and an HTTP(S) link. Missing usable content routes to review. Library approval and topic relevance require human governance.",
+        "height": 304,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2128,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "87d31831-7c98-41fc-990f-ff7d6fbe08a9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "729fb096-fbca-49b4-9a97-572330e2aa88",
+              "leftValue": "={{ $json.ai_output_valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1472,
+        64
+      ],
+      "id": "30fdf8d9-5e9d-4701-b3f7-3b7fdced5745",
+      "name": "AI Output Valid?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "30e3e468-a5d1-4165-9a53-51897df4e5f7",
+              "name": "workflow_status",
+              "value": "EMAIL_FAILED",
+              "type": "string"
+            },
+            {
+              "id": "0aa0a12a-b66d-4bf7-ad33-adbc3a02b2f6",
+              "name": "next_best_action",
+              "value": "Manually contact HCP after checking email failure",
+              "type": "string"
+            },
+            {
+              "id": "b1f956e2-8ab3-4727-ad78-d6d7f0d42d31",
+              "name": "failure_step",
+              "value": "Medical review acknowledgement email",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3488,
+        -32
+      ],
+      "id": "4b887504-b61b-4cda-8389-cc66a2605d25",
+      "name": "Prepare Email Failure"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Workflow Failures",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "submission_id": "={{ $('Create Medical Review Queue').item.json.submission_id }}",
+            "HCP Name": "={{ $('Create Medical Review Queue').item.json['HCP Name'] }}",
+            "Email": "={{ $('Create Medical Review Queue').item.json.Email }}",
+            "workflow_status": "={{ $json.workflow_status }}",
+            "failure_step": "={{ $json.failure_step }}",
+            "next_best_action": "={{ $json.next_best_action }}",
+            "error_message": "={{ $json.error?.message || $json.error || 'Email failed; inspect execution details' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "submission_id",
+              "displayName": "submission_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "HCP Name",
+              "displayName": "HCP Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow_status",
+              "displayName": "workflow_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failure_step",
+              "displayName": "failure_step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "next_best_action",
+              "displayName": "next_best_action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3712,
+        -32
+      ],
+      "id": "82443ecd-c95c-4d70-b082-10685e1f86ef",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.stringify({\n  workflow_status: 'HUMAN_REVIEW_REQUIRED',\n  routing_team: 'Medical Affairs Review',\n  contact_permitted: 'Acknowledgement only',\n  reason: $json.content_review_reason || 'No usable approved content found',\n  priority: $json.priority || 'Medium',\n  next_best_action: 'Human review to identify suitable approved content'\n}) }}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2816,
+        384
+      ],
+      "id": "630c1ae2-2fb2-4a0e-bb3e-524ab2dedb4d",
+      "name": "Prepare Missing Content Review"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e5a45be3-5a98-40ec-83a1-5aa88a8418e3",
+              "leftValue": "={{ $json.approved_content_found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2592,
+        288
+      ],
+      "id": "3e058cc7-f73b-4b3d-a70f-e0a9a5431ff6",
+      "name": "Approved Content Found?"
+    },
+    {
+      "parameters": {
+        "content": "Deterministic safeguards No consent stops AI processing and outbound email. Rule-flagged medical enquiries go to Medical Affairs. The workflow records the handoff; a person remains responsible for clinical assessment.",
+        "height": 400,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        336,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "5c036ce8-9545-4f7d-96c0-4b1dd28e7826",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Follow-up and callback connection Record the planned action in Sheets. Email preference sends selected content. Call preference sends the callback form’s Production URL through Send a message1. Submitting that form triggers the published callback workflow.",
+        "height": 240,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3056,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "fea36ece-e13d-43ea-8745-dcd6f4ca3fcd",
+      "name": "Sticky Note1"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Standardize HCP Enquiry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize HCP Enquiry": {
+      "main": [
+        [
+          {
+            "node": "Consent Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consent Valid?": {
+      "main": [
+        [
+          {
+            "node": "Query Requires Medical Review?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Block Contact-No Consent.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Requires Medical Review?": {
+      "main": [
+        [
+          {
+            "node": "Escalate to Medical Affairs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Classify Enquiry and Recommend Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Classify Enquiry and Recommend Action": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Output": {
+      "main": [
+        [
+          {
+            "node": "AI Output Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human Review Required?": {
+      "main": [
+        [
+          {
+            "node": "Route to Human Review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare CRM Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare CRM Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Find Approved Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to Human Review": {
+      "main": [
+        [
+          {
+            "node": "Create Medical Review Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HCP Enquiry CRM Log": {
+      "main": [
+        [
+          {
+            "node": "Preferred Channel?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Approved Content": {
+      "main": [
+        [
+          {
+            "node": "Combine HCP and Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine HCP and Content": {
+      "main": [
+        [
+          {
+            "node": "Approved Content Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escalate to Medical Affairs": {
+      "main": [
+        [
+          {
+            "node": "Create Medical Review Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Medical Review Queue": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preferred Channel?": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Output Valid?": {
+      "main": [
+        [
+          {
+            "node": "Human Review Required?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route to Human Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Prepare Email Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email Failure": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Missing Content Review": {
+      "main": [
+        [
+          {
+            "node": "Create Medical Review Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved Content Found?": {
+      "main": [
+        [
+          {
+            "node": "HCP Enquiry CRM Log",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Missing Content Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
